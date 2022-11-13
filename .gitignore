@@ -9,6 +9,7 @@ packages/contracts/typechain
 packages/*/node_modules
 packages/*/lib
 packages/*/tsconfig.tsbuildinfo
+scripts/python/.ipynb_checkpoints
 
 #Hardhat files
 cache
