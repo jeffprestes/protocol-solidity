@@ -15,7 +15,7 @@ Goal is to support:
 Goal is to differentiate between
 - Collections of NFTs without taking over too much of the address space
 
-UTXO structure:
+UTXO structure: Hash(timestamp, Hash(assetID, amount, partialUtxoCommitment))
 // If this is an NFT, this becomes hash(contract address, tokenId)
 // If this is a fungible token, this is selected deterministically on all chains
 {
@@ -35,13 +35,17 @@ commitment = hash(assetID, amount, hash(chainID, pubKey, blinding))
 nullifier = hash(commitment, merklePath, sign(privKey, commitment, merklePath))
 */
 
-// Universal JoinSplit transaction with nIns inputs and 2 outputs (2-2 & 16-2)
-template Transaction(levels, nIns, nOuts, zeroLeaf, length) {
+// Universal Claim/JoinSplit transaction with nIns inputs and 2 outputs (2-2 & 16-2)
+template Claim(levels, nIns, nOuts, zeroLeaf, length) {
     // extAmount = external amount used for deposits and withdrawals
     // correct extAmount range is enforced on the smart contract
     // publicAmount = extAmount - fee
     signal input publicAmount;
     signal input extDataHash; // arbitrary
+    
+    // The current timestamp is provided by the contract as a public input, intended as `block.timestamp`
+    signal input currentTimestamp;
+    signal input claimAmount;
 
     // data for input/output asset identifier
     signal input assetID;
@@ -49,6 +53,7 @@ template Transaction(levels, nIns, nOuts, zeroLeaf, length) {
 
     // data for transaction inputs
     signal input inputNullifier[nIns];
+    signal input inTimestamps[nIns];
     signal input inAmount[nIns];
     signal input inPrivateKey[nIns];
     signal input inBlinding[nIns];
@@ -57,6 +62,7 @@ template Transaction(levels, nIns, nOuts, zeroLeaf, length) {
 
     // data for transaction outputs
     signal input outputCommitment[nOuts];
+    signal input outTimestamps[nOuts];
     signal input outAmount[nOuts];
     signal input outChainID[nOuts];
     signal input outPubkey[nOuts];
@@ -74,6 +80,7 @@ template Transaction(levels, nIns, nOuts, zeroLeaf, length) {
     component inTree[nIns];
     component inCheckRoot[nIns];
     var sumIns = 0;
+    var sumOfTimeDeltas = 0;
 
     // verify correctness of transaction inputs
     for (var tx = 0; tx < nIns; tx++) {
@@ -121,6 +128,7 @@ template Transaction(levels, nIns, nOuts, zeroLeaf, length) {
         // were already checked as outputs in the previous transaction (or zero amount UTXOs that don't
         // need to be checked either).
         sumIns += inAmount[tx];
+        sumOfTimeDeltas += (now - inTimestamps[tx]);
     }
 
     component outPartialCommitmentHasher[nOuts];
@@ -167,6 +175,15 @@ template Transaction(levels, nIns, nOuts, zeroLeaf, length) {
 
     // verify amount invariant
     sumIns + publicAmount === sumOuts;
+
+    // verify claim calculation - enforce claim amount is at most f(sumOfTimeDeltas)
+    // claimAmount <= (sumInx * sumOfTimeDeltas)
+    // TODO: What is the claim function, I guess it's the same as AAVE
+    component isLessThan = LessThan(248)
+    isLessThan.in[0] <== claimAmount;
+    isLessThan.in[1] <== (sumInx * sumOfTimeDeltas);
+    1 === isLessThan.out
+
 
     // Enforce that outAssetID is zero if publicAmount is zero (i.e. shielded tx)
     // Otherwise it is equal to tokenField
