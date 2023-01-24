@@ -21,3 +21,7 @@ dist
 
 *.ptau
 yarn-error.log
+
+# Local GETH dev testnet
+dev-chain
+local-geth-testnet-notes.md
