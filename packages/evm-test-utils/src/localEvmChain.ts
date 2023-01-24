@@ -90,6 +90,15 @@ export class LocalEvmChain {
       ...governors,
     };
 
+    // console.log("=============================")
+    // console.log("localEvmChain", "deployVBridge")
+    // console.log("bridgeInput", bridgeInput)
+    // console.log("deployerConfig", deployerConfig)
+    // console.log("governorConfig", governorConfig)
+    // console.log("zkComponentsSmall", zkComponentsSmall)
+    // console.log("zkComponentsLarge", zkComponentsLarge)
+    // console.log("=============================")
+
     return VBridge.deployVariableAnchorBridge(
       bridgeInput,
       deployerConfig,
