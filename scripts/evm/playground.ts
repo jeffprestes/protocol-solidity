@@ -14,7 +14,7 @@ import type { JsNote } from '@webb-tools/wasm-utils';
 import { VAnchor, VAnchor__factory } from '@webb-tools/contracts';
 import { hexToU8a, u8aToHex } from '@webb-tools/utils';
 
-const providerGanache = new ethers.providers.JsonRpcProvider(`http://localhost:5001`);
+const providerGanache = new ethers.providers.JsonRpcProvider(`http://localhost:8545`);
 const walletGanache = new ethers.Wallet(process.env.PRIVATE_KEY!, providerGanache);
 
 export const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));

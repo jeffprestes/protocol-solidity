@@ -5,40 +5,27 @@ import path from 'path';
 import { ethers } from 'ethers';
 import {
   chainIdTypeGoerli,
-  chainIdTypeOptimism,
-  chainIdTypeArbitrum,
-  chainIdTypePolygon,
-  chainIdTypeMoonbase,
   walletGoerli,
-  walletOptimism,
-  walletArbitrum,
+  chainIdTypePolygon,
   walletPolygon,
-  walletMoonbase,
-  chainIdTypeHermes,
-  chainIdTypeAthena,
-  chainIdTypeDemeter,
-  walletHermes,
-  walletAthena,
-  walletDemeter,
   chainIdTypeSepolia,
   walletSepolia,
-  chainIdTypeAurora,
+  chainIdTypeLocal,
+  walletLocal
 } from '../../ethersGovernorWallets';
 import { EvmLinkedAnchor, ProposalSigningBackend } from '@webb-tools/test-utils';
 import { ContractConfig, getEvmChainConfig, writeEvmChainConfig } from '../utils';
 import { zip } from 'itertools';
 import {
   EndPointConfig,
-  moonbaseEndPoints,
+  goerliEndPoints,
+  localEndPoints,
   polygonEndPoints,
   sepoliaEndPoints,
 } from '../endPoints';
 import Create2VBridge from './create2Bridge';
 
-async function deploySignatureVBridge(
-  tokens: Record<number, string[]>,
-  deployers: DeployerConfig
-): Promise<Create2VBridge> {
+async function deploySignatureVBridge( tokens: Record<number, string[]>, deployers: DeployerConfig): Promise<Create2VBridge> {
   let assetRecord: Record<number, string[]> = {};
   let chainIdsArray: number[] = [];
   let existingWebbTokens = new Map<number, FungibleTokenWrapper>();
@@ -104,11 +91,10 @@ async function deploySignatureVBridge(
 
 async function run() {
   const deployers: DeployerConfig = {
-    // [chainIdTypeGoerli]: walletGoerli,
+    [chainIdTypeGoerli]: walletGoerli,
+    [chainIdTypeLocal]: walletLocal,
     [chainIdTypeSepolia]: walletSepolia,
-    // [chainIdTypeOptimism]: walletOptimism,
-    // [chainIdTypePolygon]: walletPolygon,
-    // [chainIdTypeMoonbase]: walletMoonbase,
+    [chainIdTypePolygon]: walletPolygon,
   };
 
   const tokens: Record<number, string[]> = {
@@ -120,11 +106,10 @@ async function run() {
   };
 
   const endPoints: Record<number, EndPointConfig> = {
-    // [chainIdTypeGoerli]: goerliEndPoints,
+    [chainIdTypeGoerli]: goerliEndPoints,
     [chainIdTypeSepolia]: sepoliaEndPoints,
-    // [chainIdTypeOptimism]: optimismEndPoints,
-    // [chainIdTypePolygon]: polygonEndPoints,
-    // [chainIdTypeMoonbase]: moonbaseEndPoints,
+    [chainIdTypePolygon]: polygonEndPoints,
+    [chainIdTypeLocal]: localEndPoints,
   };
 
   const vbridge = await deploySignatureVBridge(tokens, deployers);

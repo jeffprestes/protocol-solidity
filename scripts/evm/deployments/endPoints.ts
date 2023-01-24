@@ -5,31 +5,25 @@ export type EndPointConfig = {
 };
 
 export const polygonEndPoints: EndPointConfig = {
-  httpEndpoint: process.env.MUMBAI_TESTNET_HTTPS_URL!,
-  wsEndpoint: process.env.MUMBAI_TESTNET_WSS_URL!,
+  httpEndpoint: process.env.POLYGON_KEY!,
+  wsEndpoint: process.env.POLYGON_KEY_WS!,
   name: 'mumbai',
 };
 
 export const sepoliaEndPoints: EndPointConfig = {
-  httpEndpoint: process.env.SEPOLIA_HTTPS_URL!,
-  wsEndpoint: process.env.SEPOLIA_WSS_URL!,
+  httpEndpoint: process.env.SEPOLIA_KEY!,
+  wsEndpoint: process.env.SEPOLIA_KEY_WS!,
   name: 'sepolia',
 };
 
-export const optimismEndPoints: EndPointConfig = {
-  httpEndpoint: process.env.OPTIMISM_TESTNET_HTTPS_URL!,
-  wsEndpoint: process.env.OPTIMISM_TESTNET_WSS_URL!,
+export const localEndPoints: EndPointConfig = {
+  httpEndpoint: process.env.LOCAL_KEY!,
+  wsEndpoint: process.env.LOCAL_KEY_WS!,
   name: 'optimism',
 };
 
-export const moonbaseEndPoints: EndPointConfig = {
-  httpEndpoint: process.env.MOONBASE_HTTPS_URL!,
-  wsEndpoint: process.env.MOONBASE_WSS_URL!,
-  name: 'moonbase',
-};
-
 export const goerliEndPoints: EndPointConfig = {
-  httpEndpoint: process.env.GOERLI_HTTPS_URL!,
-  wsEndpoint: process.env.GOERLI_WSS_URL!,
+  httpEndpoint: process.env.GOERLI_KEY!,
+  wsEndpoint: process.env.GOERLI_KEY_WS!,
   name: 'goerli',
 };
